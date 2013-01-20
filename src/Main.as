@@ -1,26 +1,36 @@
 package {
 
-	import citrus.core.CitrusEngine;
+	import citrus.core.starling.StarlingCitrusEngine;
+	
+	import flash.display.Loader;
+	import flash.events.Event;
+	import flash.net.URLRequest;
+	
+	import starlingtiles.StarlingTilesGameState;
 
-	import games.osmos.OsmosGameState;
-
-	[SWF(frameRate="60")]
-
+	[SWF(backgroundColor="#000000", frameRate="60", width="1280", height="720")]
+	
 	/**
-	* @author Aymeric
-	*/
-	public class Main extends CitrusEngine {
-
-		public function Main() {
-
-			// copy & paste here the Main of the differents src project,
-			// be careful with the package & import!
-			// import libraries from the libs folder, select just one Nape swc.
-
-			// If you wish to use Starling, the Main class must extends StarlingCitrusEngine!
-			//setUpStarling(true);
-
-			state = new OsmosGameState();
+	 * @author Nick Pinkham
+	 */
+	public class Main extends StarlingCitrusEngine {
+		
+		public function Main():void {
+			
+			setUpStarling(true);
+			
+			var loader:Loader = new Loader();
+			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, _levelLoaded);
+			loader.load(new URLRequest("levels/starlingtiles_demo_level.swf"));
+		}
+		
+		private function _levelLoaded(evt:Event):void {
+			
+			state = new StarlingTilesGameState(evt.target.loader.content);
+			
+			evt.target.removeEventListener(Event.COMPLETE, _levelLoaded);
+			evt.target.loader.unloadAndStop();
 		}
 	}
+	
 }
